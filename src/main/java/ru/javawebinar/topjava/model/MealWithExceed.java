@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class MealWithExceed {
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:dd");
     private final LocalDateTime dateTime;
 
     private final String description;
@@ -20,8 +19,8 @@ public class MealWithExceed {
         this.exceed = exceed;
     }
 
-    public String getDateTime() {
-        return dateTime.format(formatter);
+    public LocalDateTime getDateTime() {
+        return dateTime;
     }
 
     public String getDescription() {
