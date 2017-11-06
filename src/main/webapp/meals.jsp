@@ -18,12 +18,15 @@
         <th width="200">Time</th>
         <th width="250">Description</th>
         <th width="100">Calories</th>
-
     </tr>
 <c:forEach items="${meals}" var="meal">
-    <tr
-        <c:if test="${meal.exceed}">bgcolor="red"</c:if>
-        <c:if test="${!meal.exceed}">bgcolor="#adff2f"</c:if>>
+    <c:if test="${meal.exceed}">
+        <c:set var="trColor" value="red"></c:set>
+    </c:if>
+    <c:if test="${!meal.exceed}">
+        <c:set var="trColor" value="#adff2f"></c:set>
+    </c:if>
+    <tr bgcolor='${trColor}'>
         <td>${meal.dateTime}</td>
         <td>${meal.description}</td>
         <td>${meal.calories}</td>
