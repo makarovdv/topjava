@@ -1,5 +1,7 @@
 package ru.javawebinar.topjava.web;
 import org.slf4j.Logger;
+import ru.javawebinar.topjava.dao.MealDAO;
+import ru.javawebinar.topjava.dao.MealDAOTest;
 import ru.javawebinar.topjava.model.MealWithExceed;
 import ru.javawebinar.topjava.util.MealsUtil;
 
@@ -18,9 +20,12 @@ public class MealServlet extends HttpServlet{
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         log.debug("request to meals.jsp");
+
+        MealDAO MealDAO = new MealDAOTest();
         List<MealWithExceed> mealsWithExceeded = MealsUtil.getFilteredWithExceeded(
-                MealsUtil.getMeals(), LocalTime.MIN,LocalTime.MAX,2000
+                MealDAO.getAll(), LocalTime.MIN,LocalTime.MAX,2000
         );
+
 //        log.debug("setting Attribute" + mealsWithExceeded);
         req.setAttribute("meals",mealsWithExceeded);
         req.getRequestDispatcher("/meals.jsp").forward(req, resp);

@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -27,6 +28,10 @@ public class MealsUtil {
             new Meal(7,LocalDateTime.of(2015, Month.MAY, 31, 13, 0), "Обед", 500),
             new Meal(8,LocalDateTime.of(2015, Month.MAY, 31, 20, 0), "Ужин", 510)
     );
+    private static ConcurrentHashMap<Integer,Meal> testingMealsMap = new ConcurrentHashMap<>();
+    static{
+        testingMeals.forEach(meal -> testingMealsMap.put(meal.getId(),meal));
+    }
     public static void main(String[] args) {
         List<Meal> meals = getMeals();
         List<MealWithExceed> mealsWithExceeded = getFilteredWithExceeded(meals, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
@@ -114,5 +119,8 @@ public class MealsUtil {
     }
     public static List<Meal> getMeals(){
         return testingMeals;
+    }
+    public static ConcurrentHashMap<Integer,Meal> getMealsMap(){
+        return testingMealsMap;
     }
 }

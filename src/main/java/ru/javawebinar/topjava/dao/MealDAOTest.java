@@ -1,10 +1,12 @@
 package ru.javawebinar.topjava.dao;
 
 import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.UserServlet;
 
 import org.slf4j.Logger;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.slf4j.LoggerFactory.getLogger;
@@ -24,7 +26,7 @@ public class MealDAOTest implements MealDAO {
 
     @Override
     public List<Meal> getAll() {
-        return null;
+        return new ArrayList<Meal>(MealsUtil.getMealsMap().values());
     }
 
     @Override
