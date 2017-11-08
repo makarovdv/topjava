@@ -21,9 +21,12 @@ public class MealServlet extends HttpServlet{
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         log.debug("request to meals.jsp");
 
-        MealDAO MealDAO = new MealDAOTest();
+        MealDAO mealDAO = new MealDAOTest();
+        String s = req.getParameter("remove");
+        log.debug(s);
+        if (s!=null) mealDAO.remove(Integer.parseInt(s));
         List<MealWithExceed> mealsWithExceeded = MealsUtil.getFilteredWithExceeded(
-                MealDAO.getAll(), LocalTime.MIN,LocalTime.MAX,2000
+                mealDAO.getAll(), LocalTime.MIN,LocalTime.MAX,2000
         );
 
 //        log.debug("setting Attribute" + mealsWithExceeded);

@@ -19,6 +19,7 @@
         <th width="200">Time</th>
         <th width="250">Description</th>
         <th width="100">Calories</th>
+        <th></th>
     </tr>
 <c:forEach items="${meals}" var="meal">
     <c:if test="${meal.exceed}">
@@ -33,6 +34,7 @@
         <td>${dateTime}</td>
         <td>${meal.description}</td>
         <td>${meal.calories}</td>
+        <td><a href="<c:url value='/meals?remove=${meal.id}' />" >Remove</a></td>
     </tr>
 </c:forEach>
 </body>

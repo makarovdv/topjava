@@ -26,7 +26,10 @@ public class MealDAOTest implements MealDAO {
 
     @Override
     public List<Meal> getAll() {
-        return new ArrayList<Meal>(MealsUtil.getMealsMap().values());
+        List<Meal> allMeals = new ArrayList<Meal>(MealsUtil.getMealsMap().values());
+        log.debug("Meals in list:");
+        allMeals.forEach(meal -> log.debug("Meal:" + meal));
+        return allMeals;
     }
 
     @Override
@@ -36,6 +39,7 @@ public class MealDAOTest implements MealDAO {
 
     @Override
     public void remove(int id) {
-
+        MealsUtil.getMealsMap().remove(id);
+        log.debug("removed Meal id:" + id);
     }
 }
