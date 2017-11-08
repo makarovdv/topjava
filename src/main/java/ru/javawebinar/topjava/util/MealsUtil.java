@@ -17,14 +17,15 @@ import static java.util.stream.Collectors.toList;
 
 public class MealsUtil {
     private static List<Meal> testingMeals = Arrays.asList(
-            new Meal(LocalDateTime.of(2015, Month.MAY, 29, 0, 0), "Очень ранний завтрак", 500),
-            new Meal(LocalDateTime.of(2015, Month.MAY, 29, 13, 0), "Обед", 1000),
-            new Meal(LocalDateTime.of(2015, Month.MAY, 29, 23, 59), "Очень запоздалый ужин =)", 500),                new Meal(LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "Завтрак", 500),
-            new Meal(LocalDateTime.of(2015, Month.MAY, 30, 13, 0), "Обед", 1000),
-            new Meal(LocalDateTime.of(2015, Month.MAY, 30, 20, 0), "Ужин", 500),
-            new Meal(LocalDateTime.of(2015, Month.MAY, 31, 10, 0), "Завтрак", 1000),
-            new Meal(LocalDateTime.of(2015, Month.MAY, 31, 13, 0), "Обед", 500),
-            new Meal(LocalDateTime.of(2015, Month.MAY, 31, 20, 0), "Ужин", 510)
+            new Meal(0,LocalDateTime.of(2015, Month.MAY, 29, 0, 0), "Очень ранний завтрак", 500),
+            new Meal(1,LocalDateTime.of(2015, Month.MAY, 29, 13, 0), "Обед", 1000),
+            new Meal(2,LocalDateTime.of(2015, Month.MAY, 29, 23, 59), "Очень запоздалый ужин =)", 500),
+            new Meal(3,LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "Завтрак", 500),
+            new Meal(4,LocalDateTime.of(2015, Month.MAY, 30, 13, 0), "Обед", 1000),
+            new Meal(5,LocalDateTime.of(2015, Month.MAY, 30, 20, 0), "Ужин", 500),
+            new Meal(6,LocalDateTime.of(2015, Month.MAY, 31, 10, 0), "Завтрак", 1000),
+            new Meal(7,LocalDateTime.of(2015, Month.MAY, 31, 13, 0), "Обед", 500),
+            new Meal(8,LocalDateTime.of(2015, Month.MAY, 31, 20, 0), "Ужин", 510)
     );
     public static void main(String[] args) {
         List<Meal> meals = getMeals();
@@ -109,7 +110,7 @@ public class MealsUtil {
     }
 
     public static MealWithExceed createWithExceed(Meal meal, boolean exceeded) {
-        return new MealWithExceed(meal.getDateTime(), meal.getDescription(), meal.getCalories(), exceeded);
+        return new MealWithExceed(meal, exceeded);
     }
     public static List<Meal> getMeals(){
         return testingMeals;
