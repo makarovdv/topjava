@@ -21,7 +21,7 @@ public class MealServlet extends HttpServlet{
         List<MealWithExceed> mealsWithExceeded = MealsUtil.getFilteredWithExceeded(
                 MealsUtil.getMeals(), LocalTime.MIN,LocalTime.MAX,2000
         );
-        log.debug("setting Attribute" + mealsWithExceeded);
+//        log.debug("setting Attribute" + mealsWithExceeded);
         req.setAttribute("meals",mealsWithExceeded);
         req.getRequestDispatcher("/meals.jsp").forward(req, resp);
 //        resp.sendRedirect("meals.jsp");
