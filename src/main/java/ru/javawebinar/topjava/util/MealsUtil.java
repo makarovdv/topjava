@@ -7,10 +7,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
@@ -26,6 +23,8 @@ public class MealsUtil {
     );
 
     public static final int DEFAULT_CALORIES_PER_DAY = 2000;
+
+    public static final Comparator<Meal> FIRST_NEW_DATE = (m1, m2) -> m2.getDate().compareTo(m1.getDate());
 
     public static List<MealWithExceed> getWithExceeded(Collection<Meal> meals, int caloriesPerDay) {
         return getFilteredWithExceeded(meals, LocalTime.MIN, LocalTime.MAX, caloriesPerDay);
