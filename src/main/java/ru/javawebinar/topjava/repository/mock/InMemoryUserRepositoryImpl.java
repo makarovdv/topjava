@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import static ru.javawebinar.topjava.util.UsersUtil.compareByName;
+import static ru.javawebinar.topjava.util.UsersUtil.nameAlphabetOrder;
 
 
 @Repository
@@ -51,7 +51,7 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
     public List<User> getAll() {
         log.info("getAll");
         return repository.values().stream()
-                .sorted(compareByName)
+                .sorted(nameAlphabetOrder)
                 .collect(Collectors.toList());
     }
 
