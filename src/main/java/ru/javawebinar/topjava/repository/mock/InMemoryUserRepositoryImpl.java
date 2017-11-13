@@ -11,6 +11,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+
+import static ru.javawebinar.topjava.util.UsersUtil.compareByName;
 
 
 @Repository
@@ -47,7 +50,9 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
     @Override
     public List<User> getAll() {
         log.info("getAll");
-        return UsersUtil.getSortedByName(repository.values().stream());
+        return repository.values().stream()
+                .sorted(compareByName)
+                .collect(Collectors.toList());
     }
 
     @Override
