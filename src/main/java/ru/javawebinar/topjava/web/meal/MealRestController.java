@@ -10,7 +10,6 @@ import ru.javawebinar.topjava.to.MealWithExceed;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Collections;
 import java.util.List;
 
 import org.slf4j.LoggerFactory;
@@ -23,14 +22,14 @@ public class MealRestController {
     private MealService service;
     private final Logger log = LoggerFactory.getLogger(getClass());
     public List<MealWithExceed> getAll(){
-        List<Meal> meals = service.getAll(AuthorizedUser.id());
-        return MealsUtil.getWithExceeded(meals,MealsUtil.DEFAULT_CALORIES_PER_DAY);
+        return getAll(LocalDate.MIN,LocalTime.MIN,LocalDate.MAX,LocalTime.MAX);
     }
     public Meal get(int id) {
         return service.get(id,AuthorizedUser.id());
     }
     public List<MealWithExceed> getAll(LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime){
-        return Collections.emptyList();
+        List<Meal> meals = service.getAll(AuthorizedUser.id(),startDate,endDate);
+        return MealsUtil.getFilteredWithExceeded(meals,startTime,endTime,MealsUtil.DEFAULT_CALORIES_PER_DAY);
     }
 
     public Meal create(Meal meal) {
