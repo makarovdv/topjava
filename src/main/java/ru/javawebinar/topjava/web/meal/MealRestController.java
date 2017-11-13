@@ -22,24 +22,30 @@ public class MealRestController {
     private MealService service;
     private final Logger log = LoggerFactory.getLogger(getClass());
     public List<MealWithExceed> getAll(){
+        log.info("getAll");
         return getAll(LocalDate.MIN,LocalTime.MIN,LocalDate.MAX,LocalTime.MAX);
     }
     public Meal get(int id) {
+        log.info("get {}", id);
         return service.get(id,AuthorizedUser.id());
     }
     public List<MealWithExceed> getAll(LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime){
+        log.info("getAll with arguments");
         List<Meal> meals = service.getAll(AuthorizedUser.id(),startDate,endDate);
         return MealsUtil.getFilteredWithExceeded(meals,startTime,endTime,MealsUtil.DEFAULT_CALORIES_PER_DAY);
     }
 
     public Meal create(Meal meal) {
+        log.info("create {}", meal);
         return service.create(meal,AuthorizedUser.id());
     }
     public void delete(int id) {
+        log.info("delete {}", id);
         service.delete(id,AuthorizedUser.id());
     }
 
     public void update(Meal meal) {
+        log.info("update {} with id={}", meal, meal.getUserId());
         service.update(meal, AuthorizedUser.id());
     }
 }
