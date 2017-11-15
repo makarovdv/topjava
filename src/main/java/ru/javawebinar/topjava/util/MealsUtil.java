@@ -24,16 +24,7 @@ public class MealsUtil {
 
     public static final int DEFAULT_CALORIES_PER_DAY = 2000;
 
-    public static final Comparator<Meal> FIRST_NEW_DATE = (m1, m2) -> {
-        int dateTime = m2.getDateTime().compareTo(m1.getDateTime());
-        if (dateTime!=0) return dateTime;
-        int description = m1.getDescription().compareTo(m2.getDescription());
-        if (description!=0) return description;
-        int calories = Integer.compare(m1.getCalories(),m2.getCalories());
-        if (calories!=0) return calories;
-        int id = Integer.compare(m1.getId(),m2.getId());
-        return id;
-    };
+    public static final Comparator<Meal> FIRST_NEW_DATE = (m1, m2) -> m2.getDateTime().compareTo(m1.getDateTime());
 
     public static List<MealWithExceed> getWithExceeded(Collection<Meal> meals, int caloriesPerDay) {
         return getFilteredWithExceeded(meals, LocalTime.MIN, LocalTime.MAX, caloriesPerDay);
