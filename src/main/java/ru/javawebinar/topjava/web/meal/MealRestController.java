@@ -15,6 +15,9 @@ import java.util.List;
 import org.slf4j.LoggerFactory;
 import ru.javawebinar.topjava.util.MealsUtil;
 
+import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
+import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
+
 @Controller
 public class MealRestController {
 
@@ -37,15 +40,19 @@ public class MealRestController {
 
     public Meal create(Meal meal) {
         log.info("create {}", meal);
-        return service.create(meal,AuthorizedUser.id());
+        checkNew(meal);
+        meal.setUserId(AuthorizedUser.id());
+        return service.create(meal);
     }
     public void delete(int id) {
         log.info("delete {}", id);
         service.delete(id,AuthorizedUser.id());
     }
 
-    public void update(Meal meal) {
+    public void update(Meal meal, int id) {
         log.info("update {} with id={}", meal, meal.getUserId());
-        service.update(meal, AuthorizedUser.id());
+        assureIdConsistent(meal, id);
+        meal.setUserId(AuthorizedUser.id());
+        service.update(meal);
     }
 }
