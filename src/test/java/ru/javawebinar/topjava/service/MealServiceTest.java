@@ -3,23 +3,20 @@ package ru.javawebinar.topjava.service;
 import org.junit.*;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.Stopwatch;
-import org.junit.runner.Description;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import ru.javawebinar.topjava.StopwatchImpl;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.concurrent.TimeUnit;
 
-import static org.slf4j.LoggerFactory.getLogger;
 import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.UserTestData.ADMIN_ID;
 import static ru.javawebinar.topjava.UserTestData.USER_ID;
@@ -36,43 +33,14 @@ public class MealServiceTest {
         SLF4JBridgeHandler.install();
     }
 
-    private static final Logger log = getLogger(MealServiceTest.class);
-
     @Autowired
     private MealService service;
 
     @Rule
     public final ExpectedException thrown = ExpectedException.none();
 
-    private static void logInfo(Description description, String status, long nanos) {
-        String testName = description.getMethodName();
-        log.info("Test {} {}, spent {} microseconds",
-                testName, status, TimeUnit.NANOSECONDS.toMicros(nanos));
-    }
-
     @Rule
-    public Stopwatch stopwatch = new Stopwatch() {
-
-        @Override
-        protected void succeeded(long nanos, Description description) {
-            logInfo(description, "succeeded", nanos);
-        }
-
-        @Override
-        protected void failed(long nanos, Throwable e, Description description) {
-            logInfo(description, "failed", nanos);
-        }
-
-        @Override
-        protected void skipped(long nanos, AssumptionViolatedException e, Description description) {
-            logInfo(description, "skipped", nanos);
-        }
-
-        @Override
-        protected void finished(long nanos, Description description) {
-            logInfo(description, "finished", nanos);
-        }
-    };
+    public Stopwatch stopwatch = new StopwatchImpl();
 
     @Test
     public void testDelete() throws Exception {
