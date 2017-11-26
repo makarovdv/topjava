@@ -4,7 +4,6 @@ import org.junit.AssumptionViolatedException;
 import org.junit.rules.Stopwatch;
 import org.junit.runner.Description;
 import org.slf4j.Logger;
-import ru.javawebinar.topjava.service.MealServiceTest;
 
 import java.util.concurrent.TimeUnit;
 
@@ -12,7 +11,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 public class StopwatchImpl extends Stopwatch {
 
-    private static final Logger log = getLogger(MealServiceTest.class);
+    private static final Logger log = getLogger(StopwatchImpl.class);
 
     private static void logInfo(Description description, String status, long nanos) {
         String testName = description.getMethodName();
