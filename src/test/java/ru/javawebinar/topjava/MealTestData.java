@@ -33,6 +33,18 @@ public class MealTestData {
         return new Meal(MEAL1_ID, MEAL1.getDateTime(), "Обновленный завтрак", 200);
     }
 
+    public static Meal getUpdatedInvalidDescription() {
+        StringBuilder tooLong = new StringBuilder();
+        for (int i = 0; i < 201; i++) {
+            tooLong.append('a');
+        }
+        return new Meal(MEAL1_ID, MEAL1.getDateTime(), tooLong.toString(), 200);
+    }
+
+    public static Meal getUpdatedInvalidCalories() {
+        return new Meal(MEAL1_ID, MEAL1.getDateTime(), "Обновленный завтрак", -1);
+    }
+
     public static void assertMatch(Meal actual, Meal expected) {
         assertThat(actual).isEqualToIgnoringGivenFields(expected,"user");
     }

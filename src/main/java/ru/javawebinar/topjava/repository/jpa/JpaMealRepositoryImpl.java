@@ -7,7 +7,6 @@ import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.MealRepository;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,13 +27,7 @@ public class JpaMealRepositoryImpl implements MealRepository {
             em.persist(meal);
             return meal;
         } else {
-            return em.createNamedQuery(Meal.UPDATE)
-                    .setParameter("dateTime",meal.getDateTime())
-                    .setParameter("description",meal.getDescription())
-                    .setParameter("calories",meal.getCalories())
-                    .setParameter("id",meal.getId())
-                    .setParameter("userId",userId)
-                    .executeUpdate() !=0 ? meal : null;
+            return isOwner(meal,userId) ? em.merge(meal) : null;
         }
     }
 
@@ -49,14 +42,8 @@ public class JpaMealRepositoryImpl implements MealRepository {
 
     @Override
     public Meal get(int id, int userId) {
-        try {
-            return (Meal) em.createNamedQuery(Meal.GET)
-                    .setParameter(1, id)
-                    .setParameter(2, userId)
-                    .getSingleResult();
-        } catch (NoResultException e){
-            return null;
-        }
+        Meal meal = em.find(Meal.class,id);
+        return isOwner(meal,userId) ? meal : null;
     }
 
     @Override
@@ -73,5 +60,10 @@ public class JpaMealRepositoryImpl implements MealRepository {
                 .setParameter("2", startDate)
                 .setParameter("3", endDate)
                 .getResultList();
+    }
+
+    private boolean isOwner(Meal meal, int userId){
+        User owner = em.getReference(Meal.class,meal.getId()).getUser();
+        return owner.getId() == userId;
     }
 }

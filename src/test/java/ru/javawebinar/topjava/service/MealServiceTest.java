@@ -10,6 +10,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.TransactionSystemException;
 import ru.javawebinar.topjava.StopwatchImpl;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
@@ -80,8 +81,28 @@ public class MealServiceTest {
         assertMatch(service.get(MEAL1_ID, USER_ID), updated);
     }
 
-    @Test(expected = NotFoundException.class)
+    @Test
+    public void testUpdateValidationDescription() throws Exception {
+        thrown.expect(TransactionSystemException.class);
+        thrown.expectMessage("Could not commit JPA transaction");
+        Meal updated = getUpdatedInvalidDescription();
+        service.update(updated, USER_ID);
+        assertMatch(service.get(MEAL1_ID, USER_ID), updated);
+    }
+
+    @Test
+    public void testUpdateValidationCalories() throws Exception {
+        thrown.expect(TransactionSystemException.class);
+        thrown.expectMessage("Could not commit JPA transaction");
+        Meal updated = getUpdatedInvalidCalories();
+        service.update(updated, USER_ID);
+        assertMatch(service.get(MEAL1_ID, USER_ID), updated);
+    }
+
+    @Test
     public void testUpdateNotFound() throws Exception {
+        thrown.expect(NotFoundException.class);
+        thrown.expectMessage("Not found entity with id=100002");
         service.update(MEAL1, ADMIN_ID);
     }
 
