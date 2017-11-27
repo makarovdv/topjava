@@ -41,7 +41,12 @@ public class MealServiceTest {
     public final ExpectedException thrown = ExpectedException.none();
 
     @Rule
-    public Stopwatch stopwatch = new StopwatchImpl();
+    public Stopwatch stopwatch = new StopwatchImpl(this.getClass());
+
+    @AfterClass
+    public static void afterClass(){
+        StopwatchImpl.logResult(MealServiceTest.class);
+    }
 
     @Test
     public void testDelete() throws Exception {
