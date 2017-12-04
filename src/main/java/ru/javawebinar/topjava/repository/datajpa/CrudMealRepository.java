@@ -13,9 +13,12 @@ public interface CrudMealRepository extends JpaRepository<Meal, Integer> {
 
     List<Meal> getAllByUserIdOrderByDateTimeDesc(Integer userId);
 
+    @SuppressWarnings("JpaQlInspection")
     @Query("SELECT m FROM Meal m WHERE m.dateTime BETWEEN ?1 AND ?2 AND m.user.id=?3 ORDER BY m.dateTime DESC" )
-
     List<Meal> getBetween(LocalDateTime startDate, LocalDateTime endDate, Integer userId);
 
     int deleteByIdAndUserId(Integer meal, Integer user);
+
+    @Query("SELECT m,u FROM Meal m JOIN m.user u WHERE m.id=?1 AND m.user.id=?2")
+    Meal getMealByIdWithUser(Integer id, Integer userId);
 }

@@ -19,7 +19,7 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 public abstract class MealServiceAbstractTest extends CommonServiceAbstractTest {
 
     @Autowired
-    private MealService service;
+    protected MealService service;
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
