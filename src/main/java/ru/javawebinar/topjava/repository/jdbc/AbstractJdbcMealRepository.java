@@ -8,34 +8,24 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 
-import javax.sql.DataSource;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Repository
-public abstract class JdbcMealRepositoryAbstract<T> implements MealRepository {
+public abstract class AbstractJdbcMealRepository<T> implements MealRepository {
 
     private static final RowMapper<Meal> ROW_MAPPER = BeanPropertyRowMapper.newInstance(Meal.class);
 
-    private final JdbcTemplate jdbcTemplate;
-
-    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-
-    private final SimpleJdbcInsert insertMeal;
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public JdbcMealRepositoryAbstract(DataSource dataSource, JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
-        this.insertMeal = new SimpleJdbcInsert(dataSource)
-                .withTableName("meals")
-                .usingGeneratedKeyColumns("id");
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-        this.jdbcTemplate = jdbcTemplate;
-        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
-    }
+    @Autowired
+    private SimpleJdbcInsert insertMeal;
 
     @Override
     public Meal save(Meal meal, int userId) {

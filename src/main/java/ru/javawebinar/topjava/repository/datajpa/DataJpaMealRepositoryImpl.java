@@ -1,6 +1,7 @@
 package ru.javawebinar.topjava.repository.datajpa;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.Meal;
@@ -12,6 +13,7 @@ import java.util.List;
 @Transactional(readOnly = true)
 @Repository
 public class DataJpaMealRepositoryImpl implements MealRepository {
+    private static final Sort SORT_DATE_DIME = new Sort(Sort.Direction.DESC, "dateTime");
 
     @Autowired
     private CrudMealRepository crudMealRepository;
@@ -47,11 +49,11 @@ public class DataJpaMealRepositoryImpl implements MealRepository {
 
     @Override
     public List<Meal> getAll(int userId) {
-        return crudMealRepository.getAllByUserIdOrderByDateTimeDesc(userId);
+        return crudMealRepository.getAllByUserId(userId,SORT_DATE_DIME);
     }
 
     @Override
     public List<Meal> getBetween(LocalDateTime startDate, LocalDateTime endDate, int userId) {
-        return crudMealRepository.getBetween(startDate,endDate,userId);
+        return crudMealRepository.getAllBetween(startDate,endDate,userId);
     }
 }
