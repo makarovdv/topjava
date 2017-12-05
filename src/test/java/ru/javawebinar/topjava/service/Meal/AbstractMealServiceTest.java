@@ -1,10 +1,9 @@
 package ru.javawebinar.topjava.service.Meal;
 
 import org.junit.*;
-import org.junit.rules.ExpectedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.service.CommonServiceAbstractTest;
+import ru.javawebinar.topjava.service.AbstractServiceTest;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
@@ -16,13 +15,11 @@ import static ru.javawebinar.topjava.UserTestData.ADMIN_ID;
 import static ru.javawebinar.topjava.UserTestData.USER_ID;
 
 
-public abstract class MealServiceAbstractTest extends CommonServiceAbstractTest {
+public abstract class AbstractMealServiceTest extends AbstractServiceTest {
 
     @Autowired
     protected MealService service;
 
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
 
     @Test
     public void testDelete() throws Exception {
