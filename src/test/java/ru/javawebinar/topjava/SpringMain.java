@@ -1,7 +1,6 @@
 package ru.javawebinar.topjava;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.core.env.ConfigurableEnvironment;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.to.MealWithExceed;
@@ -19,9 +18,8 @@ public class SpringMain {
         // java 7 Automatic resource management
         try (ClassPathXmlApplicationContext appCtx = new ClassPathXmlApplicationContext()
         ) {
-            ConfigurableEnvironment ce = appCtx.getEnvironment();
-            ce.setActiveProfiles("jpa","hsqldb");
-            appCtx.setEnvironment(ce);
+            appCtx.getEnvironment()
+                    .setActiveProfiles(Profiles.JPA,Profiles.HSQL_DB);
             appCtx.setConfigLocations("spring/spring-app.xml","spring/spring-db.xml");
             appCtx.refresh();
             System.out.println("Bean definition names: " + Arrays.toString(appCtx.getBeanDefinitionNames()));

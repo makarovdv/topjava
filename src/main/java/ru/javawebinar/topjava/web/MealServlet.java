@@ -1,7 +1,7 @@
 package ru.javawebinar.topjava.web;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.core.env.ConfigurableEnvironment;
+import ru.javawebinar.topjava.Profiles;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.web.meal.MealRestController;
 
@@ -29,9 +29,8 @@ public class MealServlet extends HttpServlet {
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         appCtx = new ClassPathXmlApplicationContext();
-        ConfigurableEnvironment ce = appCtx.getEnvironment();
-        ce.setActiveProfiles("datajpa", "postgres");
-        appCtx.setEnvironment(ce);
+        appCtx.getEnvironment()
+                .setActiveProfiles(Profiles.JPA, Profiles.POSTGRES_DB);
         appCtx.setConfigLocations("spring/spring-app.xml","spring/spring-db.xml");
         appCtx.refresh();
         mealController = appCtx.getBean(MealRestController.class);
