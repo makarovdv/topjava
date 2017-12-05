@@ -57,6 +57,6 @@ public class MealServiceImpl implements MealService {
 
     @Override
     public Meal getMealByIdWithUser(int id, int userId) throws OperationNotSupportedException {
-        return repository.getMealByIdWithUser(id,userId);
+        return  checkNotFoundWithId(repository.getMealByIdWithUser(id,userId),id);
     }
 }

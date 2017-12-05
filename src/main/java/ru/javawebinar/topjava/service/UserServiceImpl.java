@@ -64,6 +64,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserWithMeals(int id) throws OperationNotSupportedException {
-        return repository.getUserWithMeals(id);
+        return checkNotFoundWithId(repository.getUserWithMeals(id), id);
     }
 }
