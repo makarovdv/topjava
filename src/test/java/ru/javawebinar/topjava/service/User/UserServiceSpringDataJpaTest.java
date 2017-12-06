@@ -15,7 +15,7 @@ import static ru.javawebinar.topjava.model.AbstractBaseEntity.START_SEQ;
 public class UserServiceSpringDataJpaTest extends AbstractUserServiceTest {
     @Test
     public void getWithMeals() throws Exception {
-        User user = service.getUserWithMeals(USER_ID);
+        User user = userService.getUserWithMeals(USER_ID);
         User expected = new User(USER);
         expected.setMeals(MEALS);
         assertMatch(user, USER);
@@ -25,8 +25,8 @@ public class UserServiceSpringDataJpaTest extends AbstractUserServiceTest {
     @Test
     public void getWithEmptyMeals() throws Exception {
         User newUser = new User(START_SEQ+10, "User", "user2@yandex.ru", "password", Role.ROLE_USER);
-        service.create(newUser);
-        User user = service.getUserWithMeals(START_SEQ+10);
+        userService.create(newUser);
+        User user = userService.getUserWithMeals(START_SEQ+10);
         if (!user.getMeals().isEmpty()){
             throw new Exception("meals are not empty");
         }
@@ -35,17 +35,6 @@ public class UserServiceSpringDataJpaTest extends AbstractUserServiceTest {
     @Test
     public void getByIdWithMealsNotFound() throws Exception {
         thrown.expect(NotFoundException.class);
-        service.getUserWithMeals(START_SEQ+11);
-    }
-
-    @Override
-    public void update() throws Exception {
-        User updated = new User(USER);
-        updated.setName("UpdatedName");
-        updated.setCaloriesPerDay(330);
-        service.update(updated);
-        assertMatch(service.get(USER_ID), updated);
-        User expected = new User(USER);
-        assertMatch(updated.getMeals(),expected.getMeals());
+        userService.getUserWithMeals(START_SEQ+11);
     }
 }

@@ -19,7 +19,7 @@ public class SpringMain {
         try (ClassPathXmlApplicationContext appCtx = new ClassPathXmlApplicationContext()
         ) {
             appCtx.getEnvironment()
-                    .setActiveProfiles(Profiles.JPA,Profiles.HSQL_DB);
+                    .setActiveProfiles(Profiles.REPOSITORY_IMPLEMENTATION,Profiles.getActiveDbProfile());
             appCtx.setConfigLocations("spring/spring-app.xml","spring/spring-db.xml");
             appCtx.refresh();
             System.out.println("Bean definition names: " + Arrays.toString(appCtx.getBeanDefinitionNames()));
