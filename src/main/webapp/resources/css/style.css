@@ -20,7 +20,7 @@ dd {
 }
 
 .exceeded {
-    color: red;
+    color: #DF0101;
 }
 
 header, footer {
@@ -29,4 +29,63 @@ header, footer {
     font-size: 20px;
     padding: 5px 20px;
     margin: 6px 0;
+    border-radius: 5px;
+}
+
+button{
+    border: 0px;
+    padding: 3px 3px;
+    align-content: center;
+    vertical-align: middle;
+    border-radius: 5px;
+
+    border: 1px grey solid;
+}
+
+button:hover{
+    background: black;
+    color: white;
+}
+
+table.zebra{
+    border:0px;
+    width:100%;
+    border-spacing: 0px;
+    cellpadding:8;
+    cellspacing:0;
+}
+
+table.zebra tr{
+    text-align: left;
+}
+
+table.zebra tr:nth-child(odd){
+    background-color: white;
+}
+
+table.zebra tr:nth-child(even) {
+    background-color: #A6C9E2;
+}
+
+table.zebra td{
+    padding:8px;
+}
+
+.blue{
+    background: #A6C9E2;
+}
+.orange {
+    background: #E47D22;
+}
+
+.red {
+    background: crimson;
+}
+
+.green {
+    background: darkgreen;
+}
+
+.transparent {
+    background: transparent;
 }
