@@ -13,11 +13,10 @@ import ru.javawebinar.topjava.repository.JpaUtil;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import javax.validation.ConstraintViolationException;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static ru.javawebinar.topjava.UserTestData.*;
+import static ru.javawebinar.topjava.model.AbstractBaseEntity.START_SEQ;
 
 public abstract class AbstractUserServiceTest extends AbstractServiceTest {
 
@@ -94,6 +93,14 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
         assertMatch(all, ADMIN, USER);
     }
 
+    @Test
+    public void addRole(){
+        User user = service.get(START_SEQ + 1);
+        user.setRoles(EnumSet.of(Role.ROLE_USER,Role.ROLE_ADMIN));
+        service.update(user);
+        User user2 = service.get(START_SEQ + 1);
+        assertMatch(user2, user);
+    }
     @Test
     public void testValidation() throws Exception {
         Assume.assumeTrue(!environment.acceptsProfiles(Profiles.JDBC));

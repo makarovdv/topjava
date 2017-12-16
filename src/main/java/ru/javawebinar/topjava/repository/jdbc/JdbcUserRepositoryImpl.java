@@ -2,24 +2,27 @@ package ru.javawebinar.topjava.repository.jdbc;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.support.DataAccessUtils;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 
 import javax.sql.DataSource;
-import java.util.List;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.*;
 
 @Transactional(readOnly = true)
 @Repository
 public class JdbcUserRepositoryImpl implements UserRepository {
 
-    private static final BeanPropertyRowMapper<User> ROW_MAPPER = BeanPropertyRowMapper.newInstance(User.class);
+    private static final UserWithRolesExtractor extractor = new UserWithRolesExtractor();
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -50,6 +53,7 @@ public class JdbcUserRepositoryImpl implements UserRepository {
                         "registered=:registered, enabled=:enabled, calories_per_day=:caloriesPerDay WHERE id=:id", parameterSource) == 0) {
             return null;
         }
+        saveRoles(user.getRoles(), user.getId());
         return user;
     }
 
@@ -61,19 +65,49 @@ public class JdbcUserRepositoryImpl implements UserRepository {
 
     @Override
     public User get(int id) {
-        List<User> users = jdbcTemplate.query("SELECT * FROM users WHERE id=?", ROW_MAPPER, id);
+        String sql = "SELECT * FROM users u " +
+                "     left join user_roles r on u.id = r.user_id " +
+                "     WHERE u.id = :id";
+        Map<String, Integer> map = Collections.singletonMap("id", id);
+        List<User> users = namedParameterJdbcTemplate.query(sql, map, extractor);
         return DataAccessUtils.singleResult(users);
     }
 
     @Override
     public User getByEmail(String email) {
-//        return jdbcTemplate.queryForObject("SELECT * FROM users WHERE email=?", ROW_MAPPER, email);
-        List<User> users = jdbcTemplate.query("SELECT * FROM users WHERE email=?", ROW_MAPPER, email);
+        String sql = "SELECT * FROM users u " +
+                "     left join user_roles r on u.id = r.user_id " +
+                "     WHERE email = :email";
+        Map<String, String> map = Collections.singletonMap("email", email);
+        List<User> users = namedParameterJdbcTemplate.query(sql, map, extractor);
         return DataAccessUtils.singleResult(users);
     }
 
     @Override
     public List<User> getAll() {
-        return jdbcTemplate.query("SELECT * FROM users ORDER BY name, email", ROW_MAPPER);
+        String sql = "SELECT * FROM users u " +
+                "left join user_roles r on u.id = r.user_id";
+        return namedParameterJdbcTemplate.query(sql, extractor);
+    }
+
+    private void saveRoles(Set<Role> roles, Integer id){
+        final Set<Role> added = new HashSet<>();
+        jdbcTemplate.update("DELETE FROM user_roles WHERE user_id=?", id);
+        String sql = "INSERT INTO user_roles (role, user_id) VALUES (?, ?)";
+        jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement ps, int i) throws SQLException {
+                Role role = (roles.contains(Role.ROLE_USER)) && !added.contains(Role.ROLE_USER)
+                        ? Role.ROLE_USER : Role.ROLE_ADMIN;
+                added.add(role);
+                ps.setString(1, role.toString());
+                ps.setInt(2,id);
+            }
+
+            @Override
+            public int getBatchSize() {
+                return roles.size();
+            }
+        });
     }
 }
