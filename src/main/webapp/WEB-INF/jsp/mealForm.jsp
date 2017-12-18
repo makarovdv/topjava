@@ -8,8 +8,7 @@
 <jsp:include page="fragments/bodyHeader.jsp"/>
 <section>
     <h3>
-        <c:if test="${meal.id==null}"><spring:message code="meal.create"/></c:if>
-        <c:if test="${meal.id!=null}"><spring:message code="meal.edit"/></c:if>
+        <spring:message code="${empty meal.id? 'meal.create':'meal.edit'}"/>
     </h3>
     <hr>
     <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.Meal" scope="request"/>

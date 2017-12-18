@@ -18,7 +18,7 @@ public class UserWithRolesExtractor implements ResultSetExtractor<List<User>> {
     @Override
     public List<User> extractData(ResultSet rs) throws SQLException, DataAccessException {
         Map<Integer, User> users = new HashMap<>();
-        User user = null;
+        User user;
         while (rs.next()){
             Integer id = rs.getInt("id");
             user = users.get(id);
@@ -27,11 +27,9 @@ public class UserWithRolesExtractor implements ResultSetExtractor<List<User>> {
                 user.setRoles(EnumSet.noneOf(Role.class));
                 users.put(id,user);
             }
-            if (user.getRoles().isEmpty()) {
-                user.setRoles(EnumSet.of(Role.valueOf(rs.getString("role"))));
-            } else {
-                user.setRoles(EnumSet.of(Role.ROLE_ADMIN, Role.ROLE_USER));
-            }
+            HashSet<Role> roles = new HashSet<>(user.getRoles());
+            roles.add(Role.valueOf(rs.getString("role")));
+            user.setRoles(EnumSet.copyOf(roles));
         }
         return new ArrayList<>(users.values().stream()
                 .sorted(Comparator.comparing(User::getName).thenComparing(User::getEmail))

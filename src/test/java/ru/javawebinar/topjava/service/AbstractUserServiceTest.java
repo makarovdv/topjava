@@ -26,15 +26,21 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     @Autowired
     private CacheManager cacheManager;
 
-    @Autowired(required = false)
-    protected JpaUtil jpaUtil;
+    public abstract static class AbstractOrmUserServiceTest extends AbstractUserServiceTest{
+        @Autowired
+        protected JpaUtil jpaUtil;
+
+        @Before
+        @Override
+        public void setUp() throws Exception {
+            super.setUp();
+            jpaUtil.clear2ndLevelHibernateCache();
+        }
+    }
 
     @Before
     public void setUp() throws Exception {
         cacheManager.getCache("users").clear();
-        if (!environment.acceptsProfiles(Profiles.JDBC)) {
-            jpaUtil.clear2ndLevelHibernateCache();
-        }
     }
 
     @Test
@@ -95,12 +101,28 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
 
     @Test
     public void addRole(){
-        User user = service.get(START_SEQ + 1);
-        user.setRoles(EnumSet.of(Role.ROLE_USER,Role.ROLE_ADMIN));
+        User user = service.get(START_SEQ);
+        user.setRoles(EnumSet.of(Role.ROLE_USER, Role.ROLE_ADMIN));
         service.update(user);
-        User user2 = service.get(START_SEQ + 1);
-        assertMatch(user2, user);
+        assertMatch(user, getWithRoleAdded());
     }
+
+    @Test
+    public void changeRole(){
+        User user = service.get(START_SEQ);
+        user.setRoles(EnumSet.of(Role.ROLE_ADMIN));
+        service.update(user);
+        assertMatch(user, getWithRoleCahnged());
+    }
+
+    @Test
+    public void removeRole(){
+        User user = service.get(START_SEQ + 1);
+        user.setRoles(EnumSet.of(Role.ROLE_USER));
+        service.update(user);
+        assertMatch(user, getWithRoleUser());
+    }
+
     @Test
     public void testValidation() throws Exception {
         Assume.assumeTrue(!environment.acceptsProfiles(Profiles.JDBC));

@@ -1,6 +1,7 @@
 package ru.javawebinar.topjava.repository.jdbc;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -30,6 +31,8 @@ public class JdbcUserRepositoryImpl implements UserRepository {
 
     private final SimpleJdbcInsert insertUser;
 
+    private final UsersComparator comparator = new UsersComparator();
+
     @Autowired
     public JdbcUserRepositoryImpl(DataSource dataSource, JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.insertUser = new SimpleJdbcInsert(dataSource)
@@ -48,12 +51,24 @@ public class JdbcUserRepositoryImpl implements UserRepository {
         if (user.isNew()) {
             Number newKey = insertUser.executeAndReturnKey(parameterSource);
             user.setId(newKey.intValue());
-        } else if (namedParameterJdbcTemplate.update(
-                "UPDATE users SET name=:name, email=:email, password=:password, " +
-                        "registered=:registered, enabled=:enabled, calories_per_day=:caloriesPerDay WHERE id=:id", parameterSource) == 0) {
-            return null;
+            insertRoles(user);
+        } else {
+            User inBase = get(user.getId());
+            if(comparator.compare(inBase,user)!=0) {
+                int rows = namedParameterJdbcTemplate.update("" +
+                        "UPDATE users SET name=:name, email=:email, password=:password, " +
+                        "registered=:registered, enabled=:enabled, calories_per_day=:caloriesPerDay " +
+                        "WHERE id=:id", parameterSource);
+                if (rows == 0) {
+                    return null;
+                }
+            }
+            if(!user.getRoles().containsAll(inBase.getRoles())||
+                    !inBase.getRoles().containsAll(user.getRoles())){
+                deleteRoles(user);
+                insertRoles(user);
+            }
         }
-        saveRoles(user.getRoles(), user.getId());
         return user;
     }
 
@@ -63,14 +78,15 @@ public class JdbcUserRepositoryImpl implements UserRepository {
         return jdbcTemplate.update("DELETE FROM users WHERE id=?", id) != 0;
     }
 
+    @Cacheable("users")
     @Override
     public User get(int id) {
-        String sql = "SELECT * FROM users u " +
-                "     left join user_roles r on u.id = r.user_id " +
-                "     WHERE u.id = :id";
-        Map<String, Integer> map = Collections.singletonMap("id", id);
-        List<User> users = namedParameterJdbcTemplate.query(sql, map, extractor);
-        return DataAccessUtils.singleResult(users);
+            String sql = "SELECT * FROM users u " +
+                    "     left join user_roles r on u.id = r.user_id " +
+                    "     WHERE u.id = :id";
+            Map<String, Integer> map = Collections.singletonMap("id", id);
+            List<User> users = namedParameterJdbcTemplate.query(sql, map, extractor);
+            return DataAccessUtils.singleResult(users);
     }
 
     @Override
@@ -90,16 +106,19 @@ public class JdbcUserRepositoryImpl implements UserRepository {
         return namedParameterJdbcTemplate.query(sql, extractor);
     }
 
-    private void saveRoles(Set<Role> roles, Integer id){
-        final Set<Role> added = new HashSet<>();
+    private void deleteRoles(User user){
+        Integer id = user.getId();
         jdbcTemplate.update("DELETE FROM user_roles WHERE user_id=?", id);
+    }
+
+    private void insertRoles(User user){
+        final List<Role> roles = new ArrayList<>(user.getRoles());
+        Integer id = user.getId();
         String sql = "INSERT INTO user_roles (role, user_id) VALUES (?, ?)";
         jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {
-                Role role = (roles.contains(Role.ROLE_USER)) && !added.contains(Role.ROLE_USER)
-                        ? Role.ROLE_USER : Role.ROLE_ADMIN;
-                added.add(role);
+                Role role = roles.get(i);
                 ps.setString(1, role.toString());
                 ps.setInt(2,id);
             }
