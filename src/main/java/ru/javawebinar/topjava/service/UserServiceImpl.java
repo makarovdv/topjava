@@ -24,14 +24,14 @@ public class UserServiceImpl implements UserService {
         this.repository = repository;
     }
 
-    @CacheEvict(value = "users", key = "#user.id")
+    @CacheEvict("users")
     @Override
     public User create(User user) {
         Assert.notNull(user, "user must not be null");
         return repository.save(user);
     }
 
-    @CacheEvict(value = "users", key = "#id")
+    @CacheEvict("users")
     @Override
     public void delete(int id) throws NotFoundException {
         checkNotFoundWithId(repository.delete(id), id);
@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserService {
         return repository.getAll();
     }
 
-    @CacheEvict(value = "users", key = "#user.id")
+    @CacheEvict("users")
     @Override
     public void update(User user) {
         Assert.notNull(user, "user must not be null");
