@@ -10,8 +10,6 @@ import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
 import ru.javawebinar.topjava.web.json.JsonUtil;
 
-import java.time.LocalDateTime;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -78,8 +76,8 @@ public class MealRestControllerTest extends AbstractControllerTest {
     @Test
     public void testGetBetween() throws Exception {
         TestUtil.print(mockMvc.perform(get(
-                REST_URL + "filter?startDateTime=" + LocalDateTime.of(2015,5,30,11,0,0)
-                        + "&endDateTime=" + LocalDateTime.of(2015, 5, 30, 20, 0, 0)))
+                REST_URL + "filter?startTime=13:00"
+                        + "&endDate=2015-05-30"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(contentJson(MEAL3, MEAL2)));
