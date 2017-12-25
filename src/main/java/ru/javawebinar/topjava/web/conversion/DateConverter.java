@@ -4,18 +4,17 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
 
 @Component("dateConverter")
 public class DateConverter implements Converter<String, LocalDate> {
-    private DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
-
     @Override
     public LocalDate convert(String source) {
-        try {
-            return LocalDate.parse(source, formatter);
-        }catch (Exception e){
+        if(source == null || source.isEmpty()){
             return null;
+        } else {
+            return LocalDate.parse(source, ISO_LOCAL_DATE);
         }
     }
 }
