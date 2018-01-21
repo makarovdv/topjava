@@ -129,4 +129,14 @@ public class AdminRestControllerTest extends AbstractControllerTest {
                         .content(JsonUtil.writeValue(expected)))
                         .andExpect(status().isUnprocessableEntity());
     }
+
+    @Test
+    public void testCreateExistingEmailValidation() throws Exception {
+        User expected = new User(null, "new", "admin@gmail.com", "newPass", 1500, Role.ROLE_USER, Role.ROLE_ADMIN);
+        ResultActions action = mockMvc.perform(post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(ADMIN))
+                .content(JsonUtil.writeValue(expected)))
+                .andExpect(status().isUnprocessableEntity());
+    }
 }
