@@ -13,13 +13,15 @@ public class UserTo extends BaseTo implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @NotBlank
+    @Size(min = 2, max = 100, message = "length must be between 5 and 32 characters")
     private String name;
 
     @Email
     @NotBlank
+    @Size(max = 100, message = "max 100 characters")
     private String email;
 
-    @Size(min = 5, max = 32, message = "length must between 5 and 32 characters")
+    @Size(min = 5, max = 32, message = "length must be between 5 and 32 characters")
     private String password;
 
     @Range(min = 10, max = 10000)
